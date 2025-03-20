@@ -1,3 +1,23 @@
+## [7.0.0]
+
+* fixes for `selectedValueBuilder` and `deleteDialogBuilder`
+
+## [5.0.5]
+
+* fix image cleanup on cancel selection
+
+## [5.0.4]
+
+* media size property exposed
+
+## [5.0.3]
+
+* media size property exposed
+
+## [5.0.2]
+
+* media size property exposed
+
 ## [5.0.1]
 
 * Support `reactive_forms: 17.x`

@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   FormGroup buildForm() => fb.group({
         'input': FormControl<PhoneNumber>(
@@ -15,9 +15,10 @@ class MyApp extends StatelessWidget {
             isoCode: IsoCode.UA,
             nsn: '933456789',
           ),
+          disabled: true,
           validators: [
-            PhoneValidators.required,
-            PhoneValidators.valid,
+            // PhoneValidators.required,
+            // PhoneValidators.valid,
           ],
         ),
       });
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      localizationsDelegates: [
+      localizationsDelegates: const [
         ...PhoneFieldLocalization.delegates,
       ],
       supportedLocales: const [
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
                     ReactivePhoneFormField<PhoneNumber>(
                       formControlName: 'input',
                       focusNode: FocusNode(),
+                      valueAccessor: PhoneNumberValueAccessor(),
                       // validationMessages: {
                       //   ...PhoneValidationMessage.localizedValidationMessages(
                       //     context,

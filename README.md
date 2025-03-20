@@ -3,7 +3,23 @@
 
 # reactive_forms_widgets
 
+<p align="center">
+  <img src="https://github.com/artflutter/reactive_forms_widgets/blob/master/assets/rfw.png?raw=true" height="200" style="border-radius:8px" />
+</p>
+
 Collection of advanced widgets based on Reactive Forms managed by [Melos](https://pub.dev/packages/melos) monorepo package
+
+# Sponsors
+
+<table border="0">
+    <tbody>
+        <tr>
+            <td align="center">
+                <a href="https://www.dellaconnect.com/"><img src="https://github.com/artflutter/reactive_forms_widgets/blob/master/assets/dc.png?raw=true" width="225"/></a>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 ## Fields
 
@@ -54,3 +70,4 @@ Collection of advanced widgets based on Reactive Forms managed by [Melos](https:
 - **[ReactiveTextfieldTags](https://pub.dev/packages/reactive_textfields_tags)** - wrapper around [`textfield_tags`](https://pub.dev/packages/textfield_tags)
 - **[ReactiveDropdownButton2](https://pub.dev/packages/reactive_dropdown_button2)** - wrapper around [`dropdown_button2`](https://pub.dev/packages/dropdown_button2)
 - **[ReactiveAnimatedToggleSwitch*](https://pub.dev/packages/reactive_animated_toggle_switch)** - wrapper around [`animated_toggle_switch`](https://pub.dev/packages/animated_toggle_switch)
+- **[ReactiveDropdownMenu](https://pub.dev/packages/reactive_dropdown_menu)** - wrapper around [`DropdownMenu`](https://api.flutter.dev/flutter/material/DropdownMenu-class.html)

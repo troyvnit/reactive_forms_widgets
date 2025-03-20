@@ -40,12 +40,24 @@ class MyApp extends StatelessWidget {
                     ReactiveDropdownSearch<String, String>(
                       formControlName: 'menu',
                       dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                        decoration: InputDecoration(
                           hintText: "Select a country",
                           helperText: '',
                           labelText: "Menu mode *",
                           contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                           border: OutlineInputBorder(),
+                        ),
+                      ),
+                      suffixProps: const DropdownSuffixProps(
+                        dropdownButtonProps: DropdownButtonProps(
+                          iconOpened: Padding(
+                            padding: EdgeInsets.only(right: 120.0),
+                            child: Icon(Icons.ac_unit, size: 24),
+                          ),
+                          iconClosed: Padding(
+                            padding: EdgeInsets.only(right: 120.0),
+                            child: Icon(Icons.ac_unit, size: 24),
+                          ),
                         ),
                       ),
                       popupProps: PopupProps.menu(
@@ -54,19 +66,18 @@ class MyApp extends StatelessWidget {
                           return s.startsWith('I');
                         },
                       ),
-                      items: const [
+                      items: (_, __) => const [
                         "Brazil",
                         "Italia (Disabled)",
                         "Tunisia",
                         'Canada'
                       ],
-                      showClearButton: true,
                     ),
                     const SizedBox(height: 8),
                     ReactiveDropdownSearchMultiSelection<String, String>(
                       formControlName: 'menuMultiple',
                       dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                        decoration: InputDecoration(
                           hintText: "Select a country",
                           labelText: "Menu mode *",
                           helperText: '',
@@ -80,13 +91,12 @@ class MyApp extends StatelessWidget {
                           return s.startsWith('I');
                         },
                       ),
-                      items: const [
+                      items: (_, __) => const [
                         "Brazil",
                         "Italia (Disabled)",
                         "Tunisia",
                         'Canada'
                       ],
-                      showClearButton: true,
                     ),
                     const SizedBox(height: 8),
                     ReactiveDropdownSearch<String, String>(
@@ -124,14 +134,14 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                        decoration: InputDecoration(
                           labelText: "Custom BottomSheet mode",
                           helperText: '',
                           contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      items: const ["Brazil", "Italia", "Tunisia", 'Canada'],
+                      items: (_, __) => const ["Brazil", "Italia", "Tunisia", 'Canada'],
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(

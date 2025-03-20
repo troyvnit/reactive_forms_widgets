@@ -1,3 +1,31 @@
+## [5.0.5]
+
+* errorBuilder style application
+
+## [5.0.4]
+
+* errorBuilder
+
+## [5.0.3]
+
+* ffi dependency fix
+
+## [5.0.2]
+
+* valueAccessor fix
+
+## [5.0.1]
+
+* rollback forgotten value accessors
+
+## [5.0.0]
+
+* dropdown_search: ^6.0.0
+
+## [4.0.0]
+
+* dropdown_search: ^6.0.0
+
 ## [3.0.2]
 
 * widget key added

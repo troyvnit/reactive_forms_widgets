@@ -7,6 +7,46 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+abstract class DropDownSearchValueAccessor<T, V> {
+  DropDownSearchValueAccessor();
+
+  V? modelToViewValue(List<V> items, T? modelValue);
+
+  T? viewToModelValue(List<V> items, V? modelValue);
+}
+
+class _DropDownSearchValueAccessor<T, V> extends ControlValueAccessor<T, V> {
+  final DropdownSearchOnFind<V>? items;
+
+  final DropDownSearchValueAccessor<T, V> dropDownValueAccessor;
+
+  _DropDownSearchValueAccessor({
+    this.items,
+    required this.dropDownValueAccessor,
+  });
+
+  @override
+  V? modelToViewValue(T? modelValue) {
+    final result = items?.call('', null) ?? [];
+    if (result is List<V>) {
+      return dropDownValueAccessor.modelToViewValue(result, modelValue);
+    }
+
+    throw UnsupportedError('Asynchronously fetched values are not supported');
+  }
+
+  @override
+  T? viewToModelValue(V? viewValue) {
+    final result = items?.call('', null) ?? [];
+
+    if (result is List<V>) {
+      return dropDownValueAccessor.viewToModelValue(result, viewValue);
+    }
+
+    throw UnsupportedError('Asynchronously fetched values are not supported');
+  }
+}
+
 /// A [ReactiveDropdownSearch] that contains a [DropdownSearch].
 ///
 /// This is a convenience widget that wraps a [DropdownSearch] widget in a
@@ -84,108 +124,82 @@ class ReactiveDropdownSearch<T, V> extends ReactiveFormField<T, V> {
     super.formControlName,
     super.formControl,
     super.validationMessages,
-    super.valueAccessor,
+    DropDownSearchValueAccessor<T, V>? valueAccessor,
     super.showErrors,
 
     ////////////////////////////////////////////////////////////////////////////
-    List<V> items = const [],
+    DropdownSearchOnFind<V>? items,
     PopupProps<V> popupProps = const PopupProps.menu(),
-    DropdownSearchOnFind<V>? asyncItems,
     DropdownSearchBuilder<V>? dropdownBuilder,
-    bool showClearButton = false,
     DropdownSearchFilterFn<V>? filterFn,
     DropdownSearchItemAsString<V>? itemAsString,
     DropdownSearchCompareFn<V>? compareFn,
-    // InputDecoration? decoration,
-    ClearButtonProps clearButtonProps = const ClearButtonProps(),
-    DropdownButtonProps dropdownButtonProps = const DropdownButtonProps(),
+    Mode mode = Mode.form,
+    DropdownSuffixProps suffixProps = const DropdownSuffixProps(),
+    ClickProps clickProps = const ClickProps(),
     BeforeChange<V?>? onBeforeChange,
-    TextAlign? dropdownSearchTextAlign,
-    TextAlignVertical? dropdownSearchTextAlignVertical,
-    FocusNode? focusNode,
     FormFieldSetter<V>? onSaved,
-    TextStyle? dropdownSearchTextStyle,
     DropDownDecoratorProps dropdownDecoratorProps =
         const DropDownDecoratorProps(),
     BeforePopupOpening<V>? onBeforePopupOpening,
+    Widget Function(BuildContext context, String error)? errorBuilder,
   }) : super(
+          valueAccessor: valueAccessor != null
+              ? _DropDownSearchValueAccessor(
+                  items: items,
+                  dropDownValueAccessor: valueAccessor,
+                )
+              : null,
           builder: (field) {
-            final effectiveDecoration = (dropdownDecoratorProps
-                        .dropdownSearchDecoration ??
-                    const InputDecoration())
+            final effectiveDecoration = dropdownDecoratorProps.decoration
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 
-            final state = field as _ReactiveDropdownSearchState<T, V>;
-
-            state._setFocusNode(focusNode);
+            final errorText = field.errorText;
 
             return DropdownSearch<V>(
               key: widgetKey,
               onChanged: field.didChange,
               popupProps: popupProps,
               selectedItem: field.value,
-              items: items,
-              asyncItems: asyncItems,
               dropdownBuilder: dropdownBuilder,
               enabled: field.control.enabled,
               filterFn: filterFn,
               itemAsString: itemAsString,
               compareFn: compareFn,
-              dropdownDecoratorProps: DropDownDecoratorProps(
-                dropdownSearchDecoration:
-                    effectiveDecoration.copyWith(errorText: field.errorText),
+              mode: mode,
+              onSaved: onSaved,
+              onBeforeChange: onBeforeChange,
+              onBeforePopupOpening: onBeforePopupOpening,
+              decoratorProps: DropDownDecoratorProps(
+                decoration: effectiveDecoration.copyWith(
+                  errorText: errorBuilder == null ? errorText : null,
+                  error: errorBuilder != null && errorText != null
+                      ? DefaultTextStyle.merge(
+                          style: Theme.of(field.context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                color:
+                                    Theme.of(field.context).colorScheme.error,
+                              )
+                              .merge(effectiveDecoration.errorStyle),
+                          child: errorBuilder.call(
+                            field.context,
+                            errorText,
+                          ),
+                        )
+                      : null,
+                ),
                 baseStyle: dropdownDecoratorProps.baseStyle,
                 textAlign: dropdownDecoratorProps.textAlign,
                 textAlignVertical: dropdownDecoratorProps.textAlignVertical,
+                expands: dropdownDecoratorProps.expands,
+                isHovering: dropdownDecoratorProps.isHovering,
               ),
-              clearButtonProps: clearButtonProps,
-              dropdownButtonProps: dropdownButtonProps,
-              onBeforeChange: onBeforeChange,
-              onSaved: onSaved,
-              onBeforePopupOpening: onBeforePopupOpening,
+              suffixProps: suffixProps,
+              clickProps: clickProps,
+              items: items,
             );
           },
         );
-
-  @override
-  ReactiveFormFieldState<T, V> createState() =>
-      _ReactiveDropdownSearchState<T, V>();
-}
-
-class _ReactiveDropdownSearchState<T, V> extends ReactiveFormFieldState<T, V> {
-  FocusNode? _focusNode;
-  late FocusController _focusController;
-
-  @override
-  FocusNode get focusNode => _focusNode ?? _focusController.focusNode;
-
-  @override
-  void subscribeControl() {
-    _registerFocusController(FocusController());
-    super.subscribeControl();
-  }
-
-  @override
-  void unsubscribeControl() {
-    _unregisterFocusController();
-    super.unsubscribeControl();
-  }
-
-  void _registerFocusController(FocusController focusController) {
-    _focusController = focusController;
-    control.registerFocusController(focusController);
-  }
-
-  void _unregisterFocusController() {
-    control.unregisterFocusController(_focusController);
-    _focusController.dispose();
-  }
-
-  void _setFocusNode(FocusNode? focusNode) {
-    if (_focusNode != focusNode) {
-      _focusNode = focusNode;
-      _unregisterFocusController();
-      _registerFocusController(FocusController(focusNode: _focusNode));
-    }
-  }
 }

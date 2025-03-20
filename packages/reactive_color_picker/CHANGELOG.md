@@ -1,3 +1,11 @@
+## [2.2.0]
+
+* color picker builders for more customisations
+
+## [2.1.0]
+
+* package update + bugfix
+
 ## [2.0.1]
 
 * Support `reactive_forms: 17.x`
